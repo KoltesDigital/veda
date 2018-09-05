@@ -101,5 +101,12 @@
         "stage-2"
       ]
     }
+  },
+  "consumedServices": {
+    "linter": {
+      "versions": {
+        "^1.0.0": "consumeLinter"
+      }
+    }
   }
 }

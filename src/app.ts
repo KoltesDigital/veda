@@ -20,6 +20,20 @@ interface IAppState {
     editor?: TextEditor;
 }
 
+export type Transform = (filepath: string, shader: string) => void;
+
+export interface ILinter {
+    addTransform: (transform: Transform) => void;
+    removeTransform: (transform: Transform) => void;
+}
+
+function glslifyTransform(filepath: string, shader: string) {
+    return glslify(shader, {
+        basedir: path.dirname(filepath),
+        transform: [glslifyImport],
+    });
+}
+
 export default class App {
     private player: IPlayable;
     private state: IAppState;
@@ -30,7 +44,9 @@ export default class App {
 
     private config: Config;
 
-    constructor(config: Config) {
+    private linter: ILinter | null = null;
+
+    constructor(config: Config, linter: ILinter | null) {
         const rc = config.rc;
         const view = new View((atom.workspace as any).element);
         this.player = new Player(view, rc, false, this.lastShader);
@@ -43,6 +59,8 @@ export default class App {
         this.state = {
             isPlaying: false,
         };
+
+        this.linter = linter;
     }
 
     destroy(): void {
@@ -94,6 +112,14 @@ export default class App {
                 this.osc = oscLoader;
                 oscLoader.on('message', this.onOsc);
                 oscLoader.on('reload', () => this.loadLastShader());
+            }
+        }
+
+        if (this.linter && added.glslify !== undefined) {
+            if (added.glslify) {
+                this.linter.addTransform(glslifyTransform);
+            } else {
+                this.linter.removeTransform(glslifyTransform);
             }
         }
     };
@@ -312,10 +338,7 @@ export default class App {
             })
             .then(() => {
                 if (rc.glslify) {
-                    shader = glslify(shader, {
-                        basedir: path.dirname(filepath),
-                        transform: [glslifyImport],
-                    });
+                    shader = glslifyTransform(filepath, shader);
                 }
             })
             .then(() => {

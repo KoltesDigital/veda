@@ -1,7 +1,10 @@
+import { ILinter } from './app';
 import { IVedaStatus } from './constants';
 import Wrapper from './wrapper';
 
 let wrapper: Wrapper | null = null;
+
+let linter: ILinter | null = null;
 
 module.exports = {
     config: {
@@ -87,10 +90,14 @@ module.exports = {
     },
 
     _activate(state: IVedaStatus) {
-        wrapper = new Wrapper(state);
+        wrapper = new Wrapper(state, linter);
     },
 
     deactivate() {
         wrapper && wrapper.destroy();
+    },
+
+    consumeLinter(actualLinter: ILinter) {
+        linter = actualLinter;
     },
 };

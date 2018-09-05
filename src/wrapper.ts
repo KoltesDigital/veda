@@ -1,4 +1,4 @@
-import App from './app';
+import App, { ILinter } from './app';
 import Config from './config';
 import { AtomEnvironment, CompositeDisposable } from 'atom';
 import * as fs from 'fs';
@@ -11,7 +11,7 @@ export default class Wrapper {
     subscriptions: CompositeDisposable;
     messages: MessagePanelView | null = null;
 
-    constructor(state: any) {
+    constructor(state: any, linter: ILinter | null) {
         // TODO: Recover state
         console.log(state);
 
@@ -27,7 +27,7 @@ export default class Wrapper {
             ),
         });
 
-        this.app = new App(this.config);
+        this.app = new App(this.config, linter);
 
         atom.config.observe('veda.glslangValidatorPath', x =>
             this.setGlslangValidatorPath(x),

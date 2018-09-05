@@ -398,6 +398,9 @@ export default class Config extends EventEmitter {
         if (newObj.soundLength !== oldObj.soundLength) {
             diff.added.soundLength = newObj.soundLength;
         }
+        if (newObj.glslify !== oldObj.glslify) {
+            diff.added.glslify = newObj.glslify;
+        }
 
         return diff;
     }
