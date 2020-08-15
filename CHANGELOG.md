@@ -1,3 +1,20 @@
+# Changelog
+
+## 2.14.2
+
+- Fix errors on replacing textures
+- Fix webcam example not working
+
+## 2.14.0
+
+- Support glslify in multipass shaders
+- Add texture size to uniform as `vec2 [name]Size`
+- Fix error on rebuild
+
+## 2.13.2
+
+- Fix OSC loader bug with masseges includes multiple slashes in the address
+
 ## 2.13.0
 
 - Fix GIF loader broken by chromium update
